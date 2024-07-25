@@ -35,7 +35,7 @@ jobs:
         EOT
     - name: Create config file
       env:
-        DEFAULT_WORKOUT_NUM: 5
+        DEFAULT_WORKOUT_NUM: 10
       run: |
         cat <<EOT > /app/configuration.local.json 
         {
