@@ -15,6 +15,9 @@ on:
   schedule:
     - cron: '0 1 * * *'
 
+env:
+  OUTPUT_DIR: /app/output
+
 jobs:
   sync:
     name: 🔄 Sync
@@ -23,9 +26,6 @@ jobs:
     container: 
       image:  philosowaffle/peloton-to-garmin:console-stable
     steps:
-
-    - name: ⚙ Configure output directory
-      run: echo "OUTPUT_DIR=/app/output" >> $GITHUB_ENV
 
     - name: 📁Create output directory
       run: mkdir -p ${{ env.OUTPUT_DIR }}
@@ -86,15 +86,7 @@ jobs:
         P2G_GARMIN__EMAIL: ${{ secrets.P2G_GARMIN__EMAIL }}
         P2G_GARMIN__PASSWORD: ${{ secrets.P2G_GARMIN__PASSWORD }}
         TZ: America/New_York
-
-    - name: 💾 Save to output directory
-      # saveLocalCopy can be set when workflow action is manually run otherwise it's always skipped 
-      if: ${{ github.event.inputs.saveLocalCopy == 'true' }}
-      run: |
-        apt-get update
-        apt-get install -y zip
-        zip -r -j output.zip ${{ env.OUTPUT_DIR }}
-        
+   
     - name: ⤴ Upload output directory
       uses: actions/upload-artifact@v4
       if: ${{ github.event.inputs.saveLocalCopy == 'true' }}
