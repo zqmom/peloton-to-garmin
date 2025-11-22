@@ -8,7 +8,7 @@ on:
     inputs:
       workoutsToDownload:
         type: number
-        default: "5"
+        default: "10"
       saveLocalCopy:
         type: boolean
         default: false
@@ -23,7 +23,7 @@ jobs:
     name: 🔄 Sync
     runs-on: ubuntu-latest
     container: 
-      image:  philosowaffle/peloton-to-garmin:console-stable
+      image:  philosowaffle/peloton-to-garmin:console-latest
       options: --user root
     steps:
 
@@ -32,7 +32,7 @@ jobs:
 
     - name: 🗃 Create config file
       env:
-        DEFAULT_WORKOUT_NUM: 5
+        DEFAULT_WORKOUT_NUM: 10
       run: |
         cat <<EOT > /app/configuration.local.json 
         {
@@ -55,6 +55,7 @@ jobs:
           },
           "Peloton": {
             "NumWorkoutsToDownload": ${{ github.event.inputs.workoutsToDownload || env.DEFAULT_WORKOUT_NUM }},
+            "ExcludeWorkoutTypes": [ "cycling" ]
           },
           "Garmin": {
             "Upload": true,
@@ -84,7 +85,7 @@ jobs:
         P2G_PELOTON__PASSWORD: ${{ secrets.P2G_PELOTON__PASSWORD }}
         P2G_GARMIN__EMAIL: ${{ secrets.P2G_GARMIN__EMAIL }}
         P2G_GARMIN__PASSWORD: ${{ secrets.P2G_GARMIN__PASSWORD }}
-        TZ: America/Chicago
+        TZ: America/New_York
 
     - name: ⤴ Upload output directory
       uses: actions/upload-artifact@v4
@@ -93,3 +94,4 @@ jobs:
         name: output
         path: ${{ env.OUTPUT_DIR }}
         if-no-files-found: error
+
