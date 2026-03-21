@@ -22,9 +22,9 @@ jobs:
   sync:
     name: 🔄 Sync
     runs-on: ubuntu-latest
+    # The type of runner that the job will run on
     container: 
       image:  philosowaffle/peloton-to-garmin:console-latest
-      options: --user root
     steps:
 
     - name: 📁Create output directory
@@ -86,12 +86,11 @@ jobs:
         P2G_GARMIN__EMAIL: ${{ secrets.P2G_GARMIN__EMAIL }}
         P2G_GARMIN__PASSWORD: ${{ secrets.P2G_GARMIN__PASSWORD }}
         TZ: America/New_York
-
+   
     - name: ⤴ Upload output directory
       uses: actions/upload-artifact@v4
       if: ${{ github.event.inputs.saveLocalCopy == 'true' }}
       with:
         name: output
-        path: ${{ env.OUTPUT_DIR }}
+        path: output.zip
         if-no-files-found: error
-
